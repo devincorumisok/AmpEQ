@@ -1,4 +1,4 @@
-Package: com.kerbal.ampeq
+Package: com.devthedev.ampeq
 Name: AmpEQ
 Version: 2.0.0
 Architecture: iphoneos-arm64
@@ -31,9 +31,9 @@ Description: Real headphone gain, a system-wide 12-band EQ and 8,853 headphone c
  Other iOS 15 devices: Gain is locked to the iPod touch 7 for safety; the rest is untested and unsupported there.
  .
  Settings > AmpEQ. Respring after installing. Turn it off with the switch at the top or remove it in Sileo.
-Maintainer: Kerbal
-Author: Kerbal
+Maintainer: devthedev
+Author: devthedev
 Section: Tweaks
 Depends: firmware (>= 15.0), ellekit | mobilesubstrate, preferenceloader
-Conflicts: com.ampeq.ipod7.test
-Replaces: com.ampeq.ipod7.test
+Conflicts: com.ampeq.ipod7.test, com.kerbal.ampeq
+Replaces: com.ampeq.ipod7.test, com.kerbal.ampeq

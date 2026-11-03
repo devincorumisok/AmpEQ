@@ -55,7 +55,7 @@ bash mac/Install_On_iPod.command --build  # builds from source first
 Needs [Theos](https://theos.dev) at `~/theos`.
 
 ```sh
-make clean && make package FINALPACKAGE=1   # -> packages/com.kerbal.ampeq_*.deb
+make clean && make package FINALPACKAGE=1   # -> packages/com.devthedev.ampeq_*.deb
 # or: bash mac/Build_Deb.command             # -> copies the .deb to ~/Downloads
 ```
 
