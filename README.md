@@ -5,6 +5,23 @@
 
 AmpEQ runs inside iOS's own audio service, so it applies to everything the iPod plays - no special player needed.
 
+## Screenshots
+
+<sub>Swipe / scroll sideways →</sub>
+
+<table><tr>
+<td align="center"><img src="docs/screen-01-main.jpg" width="200" alt="Main page"><br><sub>Main page</sub></td>
+<td align="center"><img src="docs/screen-02-equalizer.jpg" width="200" alt="Equalizer"><br><sub>Equalizer</sub></td>
+<td align="center"><img src="docs/screen-03-headphones.jpg" width="200" alt="Headphone database"><br><sub>Headphone database</sub></td>
+<td align="center"><img src="docs/screen-04-plugins.jpg" width="200" alt="Plugins"><br><sub>Plugins</sub></td>
+<td align="center"><img src="docs/screen-05-drx.jpg" width="200" alt="DRX Dynamics"><br><sub>DRX Dynamics</sub></td>
+<td align="center"><img src="docs/screen-06-convolution.jpg" width="200" alt="Convolution"><br><sub>Convolution</sub></td>
+<td align="center"><img src="docs/screen-07-balance.jpg" width="200" alt="Balance"><br><sub>Balance</sub></td>
+<td align="center"><img src="docs/screen-08-gain-volume.jpg" width="200" alt="Gain & volume"><br><sub>Gain & volume</sub></td>
+<td align="center"><img src="docs/screen-09-volume-steps.jpg" width="200" alt="Volume steps"><br><sub>Volume steps</sub></td>
+<td align="center"><img src="docs/screen-10-more.jpg" width="200" alt="More"><br><sub>More</sub></td>
+</tr></table>
+
 ## Features
 
 **Gain - real hardware, no digital boost**
