@@ -1,0 +1,13 @@
+--- !tapi-tbd-v3
+archs: [ arm64 ]
+platform: ios
+install-name: /System/Library/PrivateFrameworks/Preferences.framework/Preferences
+current-version: 0
+compatibility-version: 0
+objc-constraint: retain_release
+exports:
+  - archs: [ arm64 ]
+    objc-classes: [ PSControlTableCell, PSEditableTableCell, PSListController, PSListItemsController, PSRootController,
+                    PSSliderTableCell, PSSpecifier, PSSwitchTableCell, PSTableCell, PSViewController ]
+    objc-ivars: [ PSListController._specifiers ]
+...

@@ -1,0 +1,11 @@
+#!/bin/sh
+PATH=/var/jb/usr/bin:/var/jb/bin:/var/jb/usr/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH; export PATH
+# A respring doesn't restart the audio service, so restart it here to load the new version.
+restart() {
+  killall -9 "$1" 2>/dev/null && return 0
+  for p in $(pgrep -x "$1" 2>/dev/null); do kill -9 "$p" 2>/dev/null; done
+}
+restart mediaserverd
+restart Preferences
+echo "AmpEQ installed. Respring once to finish."
+exit 0

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Off: Gain offers Low / Middle / High. On: every 0.5 dB step (the chip's finest) up to +11.5 dB.</string>
+			<key>label</key>
+			<string>Gain</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>gainDetailed</string>
+			<key>label</key>
+			<string>Detailed gain steps</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>hpDetect</string>
+			<key>label</key>
+			<string>Headphone detection</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Presets</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>importEQ</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Import EQ file…</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>saveAsPreset</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Save curve as preset…</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>deleteUserPresets</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Delete ★ presets…</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Auto processes one mixer and re-locks if it goes quiet.</string>
+			<key>label</key>
+			<string>Audio</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>target</string>
+			<key>label</key>
+			<string>Processing</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+			<key>validTitles</key>
+			<array>
+				<string>Auto</string>
+				<string>All mixers</string>
+				<string>Output unit</string>
+				<string>Observe only</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>reconnect</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Reconnect</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>AmpEQ 2.0 by Kerbal · Headphone data: AutoEq (MIT)</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>More</string>
+</dict>
+</plist>

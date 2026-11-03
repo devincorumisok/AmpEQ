@@ -1,0 +1,39 @@
+Package: com.kerbal.ampeq
+Name: AmpEQ
+Version: 2.0.0
+Architecture: iphoneos-arm64
+Description: Real headphone gain, a system-wide 12-band EQ and 8,853 headphone corrections for the iPod touch 7.
+ AmpEQ turns the iPod touch 7 into a proper little music player. Everything runs inside iOS's own audio service, so it applies to everything the iPod plays - the Music app and other apps alike, no special player needed.
+ .
+ GAIN - REAL HARDWARE, NO DIGITAL BOOST
+ Turns up the iPod's own headphone amplifier chip, past Apple's limit. Up to +11.0 dB of clean extra loudness, measured with a loopback recording on an iPod touch 7: every step is exactly 0.50 dB and distortion stays at 0.001-0.003 % until the amp's real limit. Low (stock), Middle (+5.5 dB), High (+10.5 dB), or every 0.5 dB step. Works at every volume step and only turns on when wired headphones are plugged in.
+ .
+ 12-BAND EQUALIZER
+ 31 Hz to 16 kHz with a live response curve, presets, and import of AutoEq / Equalizer APO GraphicEQ and ParametricEQ files. EQ boosts can never clip: the level is lowered by exactly what your curve needs.
+ .
+ HEADPHONE DATABASE
+ 8,853 headphone corrections from AutoEq (oratory1990, crinacle, Rtings and more). Search your model, tap Apply.
+ .
+ CLIP METER + PREVENT CLIPPING
+ A Peace-style peak meter in the Equalizer. It knows the amp's real limit, so with high Gain it warns before the amplifier distorts, not just at 0 dBFS. Prevent clipping lowers the level 0.5 dB at a time while anything clips.
+ .
+ PLUGINS
+ DRX Dynamics, gxFeed, Crossfeed, Sound field, Pitch 432, Convolution (load any impulse-response WAV) and Balance - AmpEQ's own versions of HiBy-style plugins.
+ .
+ VOLUME STEPS
+ 16 (stock) to 100 volume-button steps with the stock volume bar, plus an optional step number in the status bar.
+ .
+ COMPATIBILITY
+ Device: iPod touch 7 (iPod9,1) only. It is the only iPod that runs iOS 15 - the iPod touch 6 stops at iOS 12.5.8 and cannot run AmpEQ.
+ iOS: 15.0 - 15.8.8 (tested on 15.8.6). iOS 14 and earlier are not supported.
+ Jailbreak: any ROOTLESS jailbreak - Dopamine or palera1n (rootless). Dopamine is not required. Rootful palera1n is not supported.
+ Needs: ElleKit (or Substrate) and PreferenceLoader - installed automatically.
+ Other iOS 15 devices: Gain is locked to the iPod touch 7 for safety; the rest is untested and unsupported there.
+ .
+ Settings > AmpEQ. Respring after installing. Turn it off with the switch at the top or remove it in Sileo.
+Maintainer: Kerbal
+Author: Kerbal
+Section: Tweaks
+Depends: firmware (>= 15.0), ellekit | mobilesubstrate, preferenceloader
+Conflicts: com.ampeq.ipod7.test
+Replaces: com.ampeq.ipod7.test

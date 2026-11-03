@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>AmpEQ's own versions of HiBy-style plugins. They run after the EQ, in this order: DRX → crossfeed → sound field → pitch → convolution → balance.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>DRX Dynamics</string>
+			<key>pluginPlist</key>
+			<string>PlgDRX</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>gxFeed</string>
+			<key>pluginPlist</key>
+			<string>PlgGX</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Crossfeed</string>
+			<key>pluginPlist</key>
+			<string>PlgXF</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Sound field</string>
+			<key>pluginPlist</key>
+			<string>PlgField</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Pitch 432</string>
+			<key>pluginPlist</key>
+			<string>PlgPitch</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Convolution</string>
+			<key>pluginPlist</key>
+			<string>PlgConv</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>Balance</string>
+			<key>pluginPlist</key>
+			<string>PlgBalance</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Not included: Fixed SampleRate (iOS resamples everything to the chip's rate itself) and Spatial Reformer (no public description of what it does).</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Plugins</string>
+</dict>
+</plist>

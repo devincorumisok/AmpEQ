@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Widens (above 1.0) or narrows (below 1.0) the stereo image by scaling the side signal. Very wide settings thin out vocals.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>plgField</string>
+			<key>label</key>
+			<string>Enable</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Width</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSTitleValueCell</string>
+			<key>default</key>
+			<real>1.0</real>
+			<key>fmt</key>
+			<string>%.2f</string>
+			<key>get</key>
+			<string>valueLabel:</string>
+			<key>id</key>
+			<string>lbl_fieldWidth</string>
+			<key>label</key>
+			<string>Width</string>
+			<key>valueKey</key>
+			<string>fieldWidth</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>cellClass</key>
+			<string>AEQSliderCell</string>
+			<key>default</key>
+			<real>1.0</real>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>fieldWidth</string>
+			<key>label</key>
+			<string>Width</string>
+			<key>max</key>
+			<integer>2</integer>
+			<key>min</key>
+			<integer>0</integer>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+			<key>step</key>
+			<real>0.05</real>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>resetPlugin</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>isDestructive</key>
+			<true/>
+			<key>label</key>
+			<string>Reset to defaults</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Sound field</string>
+</dict>
+</plist>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Classic headphone crossfeed: bass from each channel is fed to the other ear (cut-off ~700 Hz, 0.3 ms delay). Mono sound is unchanged.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>plgXF</string>
+			<key>label</key>
+			<string>Enable</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>default</key>
+			<integer>1</integer>
+			<key>defaults</key>
+			<string>com.ampeq.ipod7</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>get</key>
+			<string>readPreferenceValue:</string>
+			<key>key</key>
+			<string>xfLevel</string>
+			<key>label</key>
+			<string>Amount</string>
+			<key>set</key>
+			<string>setPreferenceValue:specifier:</string>
+			<key>validTitles</key>
+			<array>
+				<string>Low (−9.5 dB)</string>
+				<string>Medium (−6 dB)</string>
+				<string>High (−4.5 dB)</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>resetPlugin</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>isDestructive</key>
+			<true/>
+			<key>label</key>
+			<string>Reset to defaults</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>Crossfeed</string>
+</dict>
+</plist>

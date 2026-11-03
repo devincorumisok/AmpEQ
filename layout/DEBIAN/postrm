@@ -1,0 +1,7 @@
+#!/bin/sh
+PATH=/var/jb/usr/bin:/var/jb/bin:/var/jb/usr/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH; export PATH
+# Unload AmpEQ from the audio daemon after removal.
+case "$1" in remove|purge)
+  killall -9 mediaserverd 2>/dev/null || for p in $(pgrep -x mediaserverd 2>/dev/null); do kill -9 "$p"; done ;;
+esac
+exit 0

@@ -1,0 +1,81 @@
+{
+ "minVersion": "0.1",
+ "class": "DepictionTabView",
+ "tintColor": "#D9573B",
+ "headerImage": "https://REPLACE-WITH-YOUR-REPO/ampeq/banner.png",
+ "tabs": [
+  {
+   "tabname": "Details",
+   "class": "DepictionStackView",
+   "views": [
+    {
+     "class": "DepictionMarkdownView",
+     "markdown": "**Real headphone gain, a system-wide 12-band EQ and 8,853 headphone corrections - made for the iPod touch 7.**\n\nAmpEQ runs inside iOS's own audio service, so it applies to everything the iPod plays - no special player needed.\n\n#### Gain - real hardware, no digital boost\nTurns up the iPod's own headphone amplifier chip past Apple's limit. Measured on an iPod touch 7 with a loopback recording:\n- every step is exactly **0.50 dB**\n- distortion **0.001-0.003 %** right up to the amp's real limit\n- clean up to **+11.0 dB** over stock\n\nLow (stock) · Middle (+5.5 dB) · High (+10.5 dB) - or every 0.5 dB step. Works at every volume step and only turns on with wired headphones.\n\n#### 12-band equalizer\n31 Hz - 16 kHz, live response curve, presets, and import of AutoEq / Equalizer APO files. EQ boosts can never clip.\n\n#### Headphone database\n8,853 corrections from AutoEq (oratory1990, crinacle, Rtings...). Search your headphones, tap **Apply**.\n\n#### Clip meter + Prevent clipping\nA Peace-style peak meter that knows the amp's real limit, and automatic protection that lowers the level 0.5 dB at a time while anything clips.\n\n#### Plugins\nDRX Dynamics · gxFeed · Crossfeed · Sound field · Pitch 432 · Convolution · Balance\n\n#### Volume steps\n16 (stock) to 100 button steps with the stock volume bar, and an optional step number in the status bar.",
+     "useSpacing": true
+    },
+    {
+     "class": "DepictionSeparatorView"
+    },
+    {
+     "class": "DepictionHeaderView",
+     "title": "Information"
+    },
+    {
+     "class": "DepictionTableTextView",
+     "title": "Version",
+     "text": "2.0.0"
+    },
+    {
+     "class": "DepictionTableTextView",
+     "title": "Device",
+     "text": "iPod touch 7"
+    },
+    {
+     "class": "DepictionTableTextView",
+     "title": "iOS",
+     "text": "15.0 - 15.8.8"
+    },
+    {
+     "class": "DepictionTableTextView",
+     "title": "Jailbreak",
+     "text": "Rootless (Dopamine / palera1n)"
+    },
+    {
+     "class": "DepictionTableTextView",
+     "title": "Developer",
+     "text": "Kerbal"
+    },
+    {
+     "class": "DepictionTableTextView",
+     "title": "Headphone data",
+     "text": "AutoEq (MIT)"
+    }
+   ]
+  },
+  {
+   "tabname": "Compatibility",
+   "class": "DepictionStackView",
+   "views": [
+    {
+     "class": "DepictionMarkdownView",
+     "markdown": "#### Works on\n- **iPod touch 7 (iPod9,1)** - the only iPod that runs iOS 15\n- **iOS 15.0 - 15.8.8** (tested on 15.8.6)\n- **Any rootless jailbreak**: Dopamine *or* palera1n (rootless). Dopamine is **not** required.\n\n#### Does not work on\n- iPod touch 6 and older (they stop at iOS 12.5.8 and earlier)\n- iOS 14 or older\n- rootful palera1n\n\n#### Other iOS 15 devices\nGain is locked to the iPod touch 7 for safety (it writes to that iPod's audio chip). The EQ, plugins and volume steps are untested and unsupported on other devices.\n\n#### Needs\nElleKit (or Substrate) and PreferenceLoader - installed automatically.",
+     "useSpacing": true
+    }
+   ]
+  },
+  {
+   "tabname": "Changelog",
+   "class": "DepictionStackView",
+   "views": [
+    {
+     "class": "DepictionSubheaderView",
+     "title": "2.0.0"
+    },
+    {
+     "class": "DepictionMarkdownView",
+     "markdown": "First public release: Gain presets from a measured sweep, headphone detection, clip meter and Prevent clipping, plugins, 16-100 volume steps with status-bar number, headphone database."
+    }
+   ]
+  }
+ ]
+}
