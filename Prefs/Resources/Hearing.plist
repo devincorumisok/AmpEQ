@@ -7,8 +7,6 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>For a hearing difference between your ears. Each ear gets its own level and 12-band EQ, added on top of the main Equalizer (it works even with the main Equalizer off).</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -29,8 +27,6 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>Example: right ear 6 dB quieter with weaker treble -&gt; Right ear: Level +6 dB, then raise the 4k-16k sliders. AmpEQ keeps both ears clean, so everything gets a little quieter by the biggest boost - turn the volume or Gain up to make up.</string>
 			<key>label</key>
 			<string>Ears</string>
 		</dict>

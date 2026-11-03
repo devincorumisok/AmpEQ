@@ -1,6 +1,6 @@
 Package: com.devthedev.ampeq
 Name: AmpEQ
-Version: 2.1.0
+Version: 2.1.1
 Architecture: iphoneos-arm64
 Description: Real headphone gain, a system-wide 12-band EQ and 8,853 headphone corrections for the iPod touch 7.
  AmpEQ turns the iPod touch 7 into a proper little music player. Everything runs inside iOS's own audio service, so it applies to everything the iPod plays - the Music app and other apps alike, no special player needed.

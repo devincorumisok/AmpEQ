@@ -79,7 +79,7 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
 - (NSString *)bandKey:(long)i { return _side?[NSString stringWithFormat:@"e%@%ld",_side,i]:[NSString stringWithFormat:@"g%ld",i]; }
 - (NSString *)levelKey { return _side?[@"earLevel" stringByAppendingString:_side]:@"preamp"; }
 - (NSString *)earCaption { float lv=[_d[[self levelKey]] floatValue];
- return [NSString stringWithFormat:@"%@ ear only, on top of the main EQ · level %+.1f dB",[_side isEqualToString:@"L"]?@"left":@"right",lv]; }
+ return [NSString stringWithFormat:@"level %+.1f dB",lv]; }
 - (void)viewDidLoad {
  [super viewDidLoad];
  NSString *side=[self.specifier propertyForKey:@"earSide"]; _side=side.length?side:nil;
