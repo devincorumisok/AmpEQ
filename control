@@ -1,6 +1,6 @@
 Package: com.devthedev.ampeq
 Name: AmpEQ
-Version: 2.0.0
+Version: 2.1.0
 Architecture: iphoneos-arm64
 Description: Real headphone gain, a system-wide 12-band EQ and 8,853 headphone corrections for the iPod touch 7.
  AmpEQ turns the iPod touch 7 into a proper little music player. Everything runs inside iOS's own audio service, so it applies to everything the iPod plays - the Music app and other apps alike, no special player needed.
@@ -19,6 +19,9 @@ Description: Real headphone gain, a system-wide 12-band EQ and 8,853 headphone c
  .
  PLUGINS
  DRX Dynamics, gxFeed, Crossfeed, Sound field, Pitch 432, Convolution (load any impulse-response WAV) and Balance - AmpEQ's own versions of HiBy-style plugins.
+ .
+ HEARING (ACCESSIBILITY)
+ Separate left / right ears: each ear gets its own level and its own 12-band EQ on top of the main Equalizer - for anyone with a hearing difference between their ears (for example one ear quieter, or weaker treble on one side). Both ears stay clean and the difference between them is exactly what you set.
  .
  VOLUME STEPS
  16 (stock) to 100 volume-button steps with the stock volume bar, plus an optional step number in the status bar.

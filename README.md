@@ -26,6 +26,8 @@ Low (stock) · Middle (+5.5 dB) · High (+10.5 dB), or every 0.5 dB step up to +
 
 **Plugins** - DRX Dynamics, gxFeed, Crossfeed, Sound field, Pitch 432, Convolution (impulse-response WAV), Balance.
 
+**Hearing (Accessibility)** - separate left / right ears: each ear gets its own level and 12-band EQ on top of the main Equalizer, for a hearing difference between ears.
+
 **Volume steps** - 16 (stock) to 100 button steps with the stock volume bar, plus an optional step number in the status bar.
 
 ## Compatibility

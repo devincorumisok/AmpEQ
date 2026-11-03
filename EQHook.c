@@ -67,6 +67,9 @@ static inline void peak_note(float a){
 static _Atomic int g_enabled=0, g_target=AEQ_TARGET_AUTO, g_have_settings=0, g_tone=0;
 static _Atomic int g_gain_c[EQ_BANDS];        /* centi-dB */
 static _Atomic int g_total_c=0;               /* centi-dB: preamp - auto headroom */
+/* hearing: per-ear curves (added to the main EQ) and per-ear output gain, both centi-dB */
+static _Atomic int g_ear_on=0, g_ear_c[2][EQ_BANDS], g_eartot_c[2];
+static int t_e[4]={-1,-1,-1,-1};
 static _Atomic unsigned g_gen=1;              /* bumped on every settings change */
 static _Atomic unsigned g_reset_gen=1;        /* bumped on reconnect -> clear filter history */
 static _Atomic uint32_t g_serial=0;
@@ -95,6 +98,7 @@ typedef struct {
  int kind; unsigned frac;
  unsigned gen, reset_gen; float rate_cfg;
  EQEngine eng;
+ EQEngine engL, engR;          /* hearing mode: left / right ear */
  uint64_t seen_calls;         /* timer-only */
  double tone_phase;
 } Slot;
@@ -175,6 +179,13 @@ static void configure(Slot *s){
  for(int i=0;i<EQ_BANDS;i++)gains[i]=(float)atomic_load_explicit(&g_gain_c[i],memory_order_relaxed)/100.0f;
  if(s->reset_gen!=rg||s->rate_cfg!=rate)eq_reset_history(&s->eng);
  eq_set(&s->eng,rate,gains,(float)atomic_load(&g_total_c)/100.0f,1);
+ if(atomic_load(&g_ear_on)){
+  int me=atomic_load(&g_enabled);
+  for(int e=0;e<2;e++){ float c[EQ_BANDS]; EQEngine *en=e?&s->engR:&s->engL;
+   for(int i=0;i<EQ_BANDS;i++)c[i]=(me?gains[i]:0)+(float)atomic_load_explicit(&g_ear_c[e][i],memory_order_relaxed)/100.0f;
+   if(s->reset_gen!=rg||s->rate_cfg!=rate)eq_reset_history(en);
+   eq_set(en,rate,c,(float)atomic_load(&g_eartot_c[e])/100.0f,1); }
+ }
  s->gen=gen; s->reset_gen=rg; s->rate_cfg=rate;
 }
 /* Measurement tone: replaces the target mix with a 1 kHz sine on every channel (-0.5 dBFS unless set.tone says otherwise). */
@@ -229,7 +240,9 @@ static void scale_buf(Slot *s,UInt32 n,AudioBufferList *d,float g){
 }
 static void process(Slot *s,UInt32 n,AudioBufferList *d){
  configure(s);
- int eq=atomic_load_explicit(&g_enabled,memory_order_relaxed)&&s->eng.active;
+ UInt32 chn=s->fmt.mChannelsPerFrame;
+ int ear=atomic_load_explicit(&g_ear_on,memory_order_relaxed)&&chn==2&&(s->engL.active||s->engR.active);
+ int eq=ear||(atomic_load_explicit(&g_enabled,memory_order_relaxed)&&s->eng.active);
  uint32_t pf=atomic_load_explicit(&g_plg_flags,memory_order_relaxed);
  const AudioStreamBasicDescription *f=&s->fmt;
  int ni=(f->mFormatFlags&kAudioFormatFlagIsNonInterleaved)!=0;
@@ -244,20 +257,21 @@ static void process(Slot *s,UInt32 n,AudioBufferList *d){
   UInt32 bc=ni?1:ch;
   if(!ab->mData||(ab->mNumberChannels&&ab->mNumberChannels!=bc)||ab->mDataByteSize<(UInt64)n*bc*bps){skip(AEQ_SKIP_SHAPE);return;}
  }
- if(eq){s->eng.xgain=pg; s->eng.peak=0;}
+ if(eq){s->eng.xgain=s->engL.xgain=s->engR.xgain=pg; s->eng.peak=s->engL.peak=s->engR.peak=0;}
  else if(pg<0.9999f)scale_buf(s,n,d,pg);   /* protection without EQ: lower the level directly */
  if(eq)for(UInt32 b=0;b<d->mNumberBuffers;b++){
   AudioBuffer *ab=&d->mBuffers[b]; UInt32 bc=ni?1:ch;
   for(UInt32 c=0;c<bc;c++){
    unsigned chan=ni?b:c;
+   EQEngine *en=ear?(chan==0?&s->engL:&s->engR):&s->eng;   /* hearing mode: each ear its own curve + level */
    switch(s->kind){
-    case K_F32: eq_process_float(&s->eng,((float*)ab->mData)+c,n,bc,chan); break;
-    case K_S16: eq_process_s16(&s->eng,((int16_t*)ab->mData)+c,n,bc,chan); break;
-    case K_S32: eq_process_s32(&s->eng,((int32_t*)ab->mData)+c,n,bc,chan,s->frac); break;
+    case K_F32: eq_process_float(en,((float*)ab->mData)+c,n,bc,chan); break;
+    case K_S16: eq_process_s16(en,((int16_t*)ab->mData)+c,n,bc,chan); break;
+    case K_S32: eq_process_s32(en,((int32_t*)ab->mData)+c,n,bc,chan,s->frac); break;
    }
   }
  }
- if(eq)peak_note(s->eng.peak);           /* level before the EQ's soft limiter */
+ if(eq)peak_note(fmaxf(s->eng.peak,fmaxf(s->engL.peak,s->engR.peak)));   /* level before the EQ's soft limiter */
  if(plg){
   int idx=(int)(s-g_slots); if(idx!=g_plg_slot){aeq_plg_reset(g_ps);g_plg_slot=idx;}
   float rate=(float)f->mSampleRate;
@@ -285,7 +299,7 @@ static OSStatus h_render(AudioUnit u,AudioUnitRenderActionFlags *fl,const AudioT
  if(target==AEQ_TARGET_OBSERVE){skip(AEQ_SKIP_NOT_TARGET);return r;}
  int tn=atomic_load_explicit(&g_tone,memory_order_relaxed);
  if(!tn&&!atomic_load_explicit(&g_enabled,memory_order_relaxed)&&!atomic_load_explicit(&g_plg_flags,memory_order_relaxed)&&
-    !atomic_load_explicit(&g_prot_on,memory_order_relaxed)){skip(AEQ_SKIP_DISABLED);return r;}
+    !atomic_load_explicit(&g_prot_on,memory_order_relaxed)&&!atomic_load_explicit(&g_ear_on,memory_order_relaxed)){skip(AEQ_SKIP_DISABLED);return r;}
  if(atomic_load_explicit(&s->fmt_state,memory_order_relaxed)!=1){skip(AEQ_SKIP_FORMAT);return r;}
  if(!is_target(s,(int)(s-g_slots),target)){skip(AEQ_SKIP_NOT_TARGET);return r;}
  if(tn)tone(s,n,d); else process(s,n,d);
@@ -347,6 +361,18 @@ static void pull_settings(void){
  for(int i=0;i<EQ_BANDS;i++)atomic_store(&g_gain_c[i],(int)lrintf(s.gains[i]*100));
  float total=eq_auto_gain_db(s.gains,s.preamp,48000.0f);
  atomic_store(&g_total_c,(int)lrintf(total*100));
+ { /* hearing: both ears share one headroom (the louder ear sets it), so the difference between
+    * the ears is exactly what was set - e.g. right +6 dB really is 6 dB above the left */
+   uint64_t w[4]={0,0,0,0}; for(int i=0;i<4;i++)if(t_e[i]>=0)notify_get_state(t_e[i],&w[i]);
+   float el[EQ_BANDS],er[EQ_BANDS],lv[2]; int on=aeq_unpack_ear(w,el,er,lv);
+   if(on){
+    float pk=0, pre=s.enabled?s.preamp:0;
+    for(int e=0;e<2;e++){ float c[EQ_BANDS]; for(int i=0;i<EQ_BANDS;i++){c[i]=(s.enabled?s.gains[i]:0)+(e?er[i]:el[i]); atomic_store(&g_ear_c[e][i],(int)lrintf((e?er[i]:el[i])*100));}
+     float p=eq_peak_db(c,48000.0f)+lv[e]; if(p>pk)pk=p; }
+    float base=(pre<-12?-12:(pre>12?12:pre))-pk;
+    for(int e=0;e<2;e++)atomic_store(&g_eartot_c[e],(int)lrintf((base+lv[e])*100));
+   }
+   atomic_store(&g_ear_on,on); }
  if(atomic_load(&g_target)!=s.target)atomic_store(&g_lock,-1);
  atomic_store(&g_target,s.target);
  atomic_store(&g_enabled,s.enabled);
@@ -481,6 +507,7 @@ __attribute__((constructor)) static void ampeq_init(void){
  set(T.heart,aeq_pack_heart((uint32_t)getpid(),atomic_load(&g_flags),0));
 
  notify_register_check(AEQ_SET_TONE,&t_tone);
+ for(int i=0;i<4;i++){char k[64];snprintf(k,sizeof k,AEQ_SET_E "%d",i);notify_register_check(k,&t_e[i]);}
  notify_register_check(AEQ_SET_HDR,&t_hdr); notify_register_check(AEQ_SET_A,&t_a); notify_register_check(AEQ_SET_B,&t_b);
  for(int i=0;i<4;i++){char k[64];snprintf(k,sizeof k,AEQ_SET_P "%d",i);notify_register_check(k,&t_p[i]);}
  if(ms)g_ps=aeq_plg_state_create();

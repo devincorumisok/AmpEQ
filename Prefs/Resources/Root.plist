@@ -203,6 +203,22 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Accessibility</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>AEQPluginController</string>
+			<key>label</key>
+			<string>Hearing (left / right)</string>
+			<key>pluginPlist</key>
+			<string>Hearing</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 		</dict>
 		<dict>
 			<key>cell</key>

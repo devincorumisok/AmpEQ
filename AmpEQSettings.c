@@ -53,6 +53,11 @@ int aeq_settings_from_dict(const void *dict,AEQSettings *s){
  if(s->masterOff){s->enabled=0;s->ampObserve=0;s->ampBoost=0;s->tone=0;s->clipProtect=0;memset(s->plg,0,sizeof s->plg);}
  int t=(int)num(d,"target",0); s->target=(t>=0&&t<=3)?t:0;
  for(int i=0;i<AEQ_BANDS;i++){char k[8];snprintf(k,sizeof k,"g%d",i);s->gains[i]=clampf(num(d,k,0),-12,12);}
+ /* hearing: separate left / right adjustment on top of the main EQ */
+ s->earOn=!s->masterOff&&num(d,"earOn",0)!=0;
+ for(int i=0;i<AEQ_BANDS;i++){char k[8];snprintf(k,sizeof k,"eL%d",i);s->earL[i]=clampf(num(d,k,0),-12,12);
+  snprintf(k,sizeof k,"eR%d",i);s->earR[i]=clampf(num(d,k,0),-12,12);}
+ s->earLevel[0]=clampf(num(d,"earLevelL",0),-12,12); s->earLevel[1]=clampf(num(d,"earLevelR",0),-12,12);
  return 1;
 }
 int aeq_settings_load(AEQSettings *s){
@@ -77,6 +82,8 @@ uint32_t aeq_settings_publish(const AEQSettings *s){
  if(!serial)serial=1;
  /* order matters: halves first, header last (reader validates serials) */
  for(int i=0;i<4;i++){char k[64];snprintf(k,sizeof k,AEQ_SET_P "%d",i);put(k,s->plg[i]);}
+ { uint64_t e[4]; aeq_pack_ear(s->earOn,s->earL,s->earR,s->earLevel[0],s->earLevel[1],e);
+   for(int i=0;i<4;i++){char k[64];snprintf(k,sizeof k,AEQ_SET_E "%d",i);put(k,e[i]);} }
  put(AEQ_SET_A,aeq_pack_a(s->gains));
  put(AEQ_SET_B,aeq_pack_b(s->gains,serial));
  put(AEQ_SET_HDR,aeq_hdr_protect(aeq_pack_hdr_m(s->enabled,s->ampObserve,s->preamp,s->target,serial,s->ampBoost,s->tone,s->masterOff),s->clipProtect,s->protReset));

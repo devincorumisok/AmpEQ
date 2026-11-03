@@ -10,7 +10,7 @@
    "views": [
     {
      "class": "DepictionMarkdownView",
-     "markdown": "**Real headphone gain, a system-wide 12-band EQ and 8,853 headphone corrections - made for the iPod touch 7.**\n\nAmpEQ runs inside iOS's own audio service, so it applies to everything the iPod plays - no special player needed.\n\n#### Gain - real hardware, no digital boost\nTurns up the iPod's own headphone amplifier chip past Apple's limit. Measured on an iPod touch 7 with a loopback recording:\n- every step is exactly **0.50 dB**\n- distortion **0.001-0.003 %** right up to the amp's real limit\n- clean up to **+11.0 dB** over stock\n\nLow (stock) · Middle (+5.5 dB) · High (+10.5 dB) - or every 0.5 dB step. Works at every volume step and only turns on with wired headphones.\n\n#### 12-band equalizer\n31 Hz - 16 kHz, live response curve, presets, and import of AutoEq / Equalizer APO files. EQ boosts can never clip.\n\n#### Headphone database\n8,853 corrections from AutoEq (oratory1990, crinacle, Rtings...). Search your headphones, tap **Apply**.\n\n#### Clip meter + Prevent clipping\nA Peace-style peak meter that knows the amp's real limit, and automatic protection that lowers the level 0.5 dB at a time while anything clips.\n\n#### Plugins\nDRX Dynamics · gxFeed · Crossfeed · Sound field · Pitch 432 · Convolution · Balance\n\n#### Volume steps\n16 (stock) to 100 button steps with the stock volume bar, and an optional step number in the status bar.",
+     "markdown": "**Real headphone gain, a system-wide 12-band EQ and 8,853 headphone corrections - made for the iPod touch 7.**\n\nAmpEQ runs inside iOS's own audio service, so it applies to everything the iPod plays - no special player needed.\n\n#### Gain - real hardware, no digital boost\nTurns up the iPod's own headphone amplifier chip past Apple's limit. Measured on an iPod touch 7 with a loopback recording:\n- every step is exactly **0.50 dB**\n- distortion **0.001-0.003 %** right up to the amp's real limit\n- clean up to **+11.0 dB** over stock\n\nLow (stock) · Middle (+5.5 dB) · High (+10.5 dB) - or every 0.5 dB step. Works at every volume step and only turns on with wired headphones.\n\n#### 12-band equalizer\n31 Hz - 16 kHz, live response curve, presets, and import of AutoEq / Equalizer APO files. EQ boosts can never clip.\n\n#### Headphone database\n8,853 corrections from AutoEq (oratory1990, crinacle, Rtings...). Search your headphones, tap **Apply**.\n\n#### Clip meter + Prevent clipping\nA Peace-style peak meter that knows the amp's real limit, and automatic protection that lowers the level 0.5 dB at a time while anything clips.\n\n#### Plugins\nDRX Dynamics · gxFeed · Crossfeed · Sound field · Pitch 432 · Convolution · Balance\n\n#### Hearing (Accessibility)\nSeparate left / right ears: each ear gets its own level and 12-band EQ on top of the main Equalizer - for a hearing difference between ears.\n\n#### Volume steps\n16 (stock) to 100 button steps with the stock volume bar, and an optional step number in the status bar.",
      "useSpacing": true
     },
     {
@@ -23,7 +23,7 @@
     {
      "class": "DepictionTableTextView",
      "title": "Version",
-     "text": "2.0.0"
+     "text": "2.1.0"
     },
     {
      "class": "DepictionTableTextView",
@@ -67,6 +67,14 @@
    "tabname": "Changelog",
    "class": "DepictionStackView",
    "views": [
+    {
+     "class": "DepictionSubheaderView",
+     "title": "2.1.0"
+    },
+    {
+     "class": "DepictionMarkdownView",
+     "markdown": "New: Accessibility > Hearing (left / right) - separate level and 12-band EQ for each ear."
+    },
     {
      "class": "DepictionSubheaderView",
      "title": "2.0.0"

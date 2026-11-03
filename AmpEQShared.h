@@ -27,6 +27,7 @@
 #define AEQ_SET_A     AEQ_NS "set.a"     /* bands 0..7 */
 #define AEQ_SET_B     AEQ_NS "set.b"     /* bands 8..11 + serial */
 #define AEQ_SET_TONE  AEQ_NS "set.tone"  /* test tone level: centi-dB below full scale (0 = default -0.5 dBFS) */
+#define AEQ_SET_E     AEQ_NS "set.e"     /* + digit 0..3: per-ear (hearing) EQ, see aeq_pack_ear */
 #define AEQ_SET_P     AEQ_NS "set.p"
 #define AEQ_ROUTE     AEQ_NS "route"     /* SpringBoard: 0 unknown, 1 wired headphones, 2 speaker / Bluetooth / other */
 #define AEQ_NOTE_ROUTE AEQ_NS "note.route"
@@ -103,7 +104,7 @@ static inline uint64_t aeq_pack_b(const float g[AEQ_BANDS],uint32_t serial){
  uint64_t v=0; for(int i=0;i<4;i++)v|=((uint64_t)(uint8_t)aeq_q(g[8+i]))<<(8*i);
  return v|((uint64_t)serial<<32);
 }
-typedef struct { int valid,enabled,ampObserve,target,ampBoost,tone,masterOff,clipProtect,protReset; float preamp; float gains[AEQ_BANDS]; uint32_t serial; uint64_t plg[4]; } AEQSettings;
+typedef struct { int valid,enabled,ampObserve,target,ampBoost,tone,masterOff,clipProtect,protReset; int earOn; float earL[AEQ_BANDS],earR[AEQ_BANDS],earLevel[2]; float preamp; float gains[AEQ_BANDS]; uint32_t serial; uint64_t plg[4]; } AEQSettings;
 /* Returns 1 only if header is valid and both halves carry the same serial. */
 static inline int aeq_unpack(uint64_t hdr,uint64_t a,uint64_t b,AEQSettings *s){
  memset(s,0,sizeof(*s));
@@ -172,6 +173,18 @@ static inline void aeq_unpack_name8(uint64_t v,char out[9]){
 }
 static inline void aeq_fourcc(uint32_t v,char out[5]){
  for(int i=0;i<4;i++){char c=(char)((v>>(24-8*i))&0xFF); out[i]=(c>=32&&c<127)?c:'?';} out[4]=0;
+}
+/* per-ear (hearing) EQ, 4 words: w0 = left bands 0-7, w1 = left 8-11 + right 0-3, w2 = right 4-11
+ * (int8 quarter-dB each); w3 bit 0 on, bits 8-15 left level, bits 16-23 right level (int8 quarter-dB) */
+static inline void aeq_pack_ear(int on,const float l[AEQ_BANDS],const float r[AEQ_BANDS],float lvlL,float lvlR,uint64_t w[4]){
+ uint8_t b[24]; for(int i=0;i<12;i++){b[i]=(uint8_t)aeq_q(l[i]);b[12+i]=(uint8_t)aeq_q(r[i]);}
+ for(int k=0;k<3;k++){w[k]=0;for(int i=0;i<8;i++)w[k]|=((uint64_t)b[k*8+i])<<(8*i);}
+ w[3]=(uint64_t)(on?1:0)|((uint64_t)(uint8_t)aeq_q(lvlL)<<8)|((uint64_t)(uint8_t)aeq_q(lvlR)<<16);
+}
+static inline int aeq_unpack_ear(const uint64_t w[4],float l[AEQ_BANDS],float r[AEQ_BANDS],float lvl[2]){
+ for(int n=0;n<24;n++){float g=aeq_dq((int8_t)((w[n/8]>>(8*(n%8)))&0xFF)); if(n<12)l[n]=g; else r[n-12]=g;}
+ lvl[0]=aeq_dq((int8_t)((w[3]>>8)&0xFF)); lvl[1]=aeq_dq((int8_t)((w[3]>>16)&0xFF));
+ return (int)(w[3]&1);
 }
 /* clip meter (mediaserverd, 10 per second):
  * bits 0-15  peak relative to the clip point, centi-dB + 10000 (10000 = exactly at the clip point)

@@ -27,7 +27,7 @@ static double biquad_mag_db(const EQCoeff *c,double rate,double f){
 float eq_response_db(const float gains[EQ_BANDS],float rate,float f){
  rate=bound(rate,8000,192000); double sum=0;
  for(int i=0;i<EQ_BANDS;i++){
-  float g=bound(gains?gains[i]:0,-12,12);
+  float g=bound(gains?gains[i]:0,-24,24);    /* main EQ + per-ear curve */
   if(!band_usable(i,rate,g))continue;
   EQCoeff c; design(&c,rate,eq_freqs[i],g); sum+=biquad_mag_db(&c,rate,f);
  }
@@ -65,11 +65,11 @@ void eq_set(EQEngine *e,float rate,const float gains[EQ_BANDS],float total_gain_
  if(!e)return;
  rate=bound(rate,8000,192000);
  e->sample_rate=rate; e->nbands=0;
- total_gain_db=bound(total_gain_db,-40,12);
+ total_gain_db=bound(total_gain_db,-60,24);
  e->gain=powf(10.0f,total_gain_db/20.0f); if(!(e->xgain>0))e->xgain=1.0f;
  int any=0;
  for(int i=0;i<EQ_BANDS;i++){
-  float g=bound(gains?gains[i]:0,-12,12);
+  float g=bound(gains?gains[i]:0,-24,24);
   e->band_on[i]=0;
   if(!enabled||!band_usable(i,rate,g)){e->coeff[i]=(EQCoeff){1,0,0,0,0};continue;}
   design(&e->coeff[i],rate,eq_freqs[i],g); e->band_on[i]=1; any=1; e->nbands++;

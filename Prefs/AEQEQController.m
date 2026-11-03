@@ -13,6 +13,7 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
 
 @interface AEQCurveView : UIView
 @property(nonatomic) float preamp;
+@property(nonatomic, copy) NSString *caption;   /* replaces the gain line (hearing pages) */
 - (void)setGains:(const float *)g;
 @end
 @implementation AEQCurveView { float _g[12]; }
@@ -35,7 +36,7 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
   CGPoint pt=CGPointMake(X(f),Y(fmaxf(-12,fminf(12,r)))); if(k)[p addLineToPoint:pt]; else [p moveToPoint:pt];}
  p.lineWidth=2.5; p.lineJoinStyle=kCGLineJoinRound; [self.tintColor setStroke]; [p stroke];
  float total=eq_auto_gain_db(_g,_preamp,48000);
- NSString *s=[NSString stringWithFormat:@"curve peak %+.1f dB · output gain %+.1f dB",fmaxf(0,peak),total];
+ NSString *s=_caption?:[NSString stringWithFormat:@"curve peak %+.1f dB · output gain %+.1f dB",fmaxf(0,peak),total];
  NSDictionary *a=@{NSFontAttributeName:[UIFont monospacedDigitSystemFontOfSize:11 weight:UIFontWeightMedium],NSForegroundColorAttributeName:[UIColor secondaryLabelColor]};
  CGSize sz=[s sizeWithAttributes:a];
  [s drawAtPoint:CGPointMake(b.origin.x+(b.size.width-sz.width)/2,y0+h+4) withAttributes:a];
@@ -72,11 +73,17 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
  NSMutableDictionary *_d; AEQCurveView *_curve;
  UISlider *_s[12]; UILabel *_val[12], *_freq[12];
  UISlider *_pre; UILabel *_preLbl, *_preVal; UIStackView *_buttons;
+ NSString *_side;   /* nil: main EQ; @"L" / @"R": that ear's adjustment (Accessibility > Hearing) */
  AEQClipBar *_bar; UILabel *_peakLbl, *_peakVal, *_protLbl, *_protVal; UISwitch *_protSw; UIButton *_protReset; NSTimer *_meterTimer;
 }
+- (NSString *)bandKey:(long)i { return _side?[NSString stringWithFormat:@"e%@%ld",_side,i]:[NSString stringWithFormat:@"g%ld",i]; }
+- (NSString *)levelKey { return _side?[@"earLevel" stringByAppendingString:_side]:@"preamp"; }
+- (NSString *)earCaption { float lv=[_d[[self levelKey]] floatValue];
+ return [NSString stringWithFormat:@"%@ ear only, on top of the main EQ · level %+.1f dB",[_side isEqualToString:@"L"]?@"left":@"right",lv]; }
 - (void)viewDidLoad {
  [super viewDidLoad];
- self.title=@"Equalizer";
+ NSString *side=[self.specifier propertyForKey:@"earSide"]; _side=side.length?side:nil;
+ self.title=_side?([_side isEqualToString:@"L"]?@"Left ear":@"Right ear"):@"Equalizer";
  self.view.backgroundColor=[UIColor systemGroupedBackgroundColor];
  _curve=[AEQCurveView new]; _curve.backgroundColor=[UIColor clearColor]; _curve.contentMode=UIViewContentModeRedraw;
  [self.view addSubview:_curve];
@@ -93,13 +100,13 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
   UILabel *f=[UILabel new]; f.font=[UIFont systemFontOfSize:10 weight:UIFontWeightMedium]; f.textAlignment=NSTextAlignmentCenter;
   f.textColor=[UIColor secondaryLabelColor]; f.text=kFreqLabels[i]; [self.view addSubview:f]; _freq[i]=f;
  }
- _preLbl=[UILabel new]; _preLbl.text=@"Preamp"; _preLbl.font=[UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
+ _preLbl=[UILabel new]; _preLbl.text=_side?@"Level":@"Preamp"; _preLbl.font=[UIFont systemFontOfSize:15 weight:UIFontWeightMedium];
  _preVal=[UILabel new]; _preVal.font=[UIFont monospacedDigitSystemFontOfSize:15 weight:UIFontWeightRegular]; _preVal.textAlignment=NSTextAlignmentRight; _preVal.textColor=[UIColor secondaryLabelColor];
  _pre=[UISlider new]; _pre.minimumValue=-12; _pre.maximumValue=12; [_pre setThumbImage:th forState:UIControlStateNormal];
  [_pre addTarget:self action:@selector(preChanged:) forControlEvents:UIControlEventValueChanged];
  for(UIView *v in @[_preLbl,_preVal,_pre])[self.view addSubview:v];
  NSMutableArray *bs=[NSMutableArray array];
- for(NSArray *b in @[@[@"Flat",@"flat"],@[@"Import…",@"importEQ"],@[@"Save…",@"savePreset"]]){
+ for(NSArray *b in (_side?@[@[@"Flat",@"flat"],@[@"Same as other ear",@"copyOtherEar"]]:@[@[@"Flat",@"flat"],@[@"Import…",@"importEQ"],@[@"Save…",@"savePreset"]])){
   UIButton *x=[UIButton buttonWithType:UIButtonTypeSystem]; [x setTitle:b[0] forState:UIControlStateNormal];
   x.titleLabel.font=[UIFont systemFontOfSize:16 weight:UIFontWeightSemibold];
   x.backgroundColor=[UIColor secondarySystemGroupedBackgroundColor]; x.layer.cornerRadius=10;
@@ -118,7 +125,7 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
  [self.view addSubview:_buttons];
 }
 - (void)viewWillAppear:(BOOL)a { [super viewWillAppear:a]; _d=[AEQStore load]; [self refresh];
- _meterTimer=[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(meterTick) userInfo:nil repeats:YES]; }
+ if(!_side)_meterTimer=[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(meterTick) userInfo:nil repeats:YES]; }
 - (void)viewWillDisappear:(BOOL)a { [super viewWillDisappear:a]; [_meterTimer invalidate]; _meterTimer=nil; }
 - (void)meterTick {
  uint64_t m=aeq_state(AEQ_METER);
@@ -135,11 +142,11 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
 - (void)resetProtection { _d[@"protReset"]=@(([_d[@"protReset"] intValue]+1)&15); [AEQStore save:_d]; }
 - (void)refresh {
  float g[12];
- for(int i=0;i<12;i++){g[i]=[_d[[NSString stringWithFormat:@"g%d",i]] floatValue]; _s[i].value=g[i];
+ for(int i=0;i<12;i++){g[i]=[_d[[self bandKey:i]] floatValue]; _s[i].value=g[i];
   _val[i].text=fabsf(g[i])<0.01f?@"0":[NSString stringWithFormat:@"%+g",g[i]];}
  _protSw.on=_d[@"clipProtect"]?[_d[@"clipProtect"] boolValue]:YES;
- float p=[_d[@"preamp"] floatValue]; _pre.value=p; _preVal.text=[NSString stringWithFormat:@"%+.1f dB",p];
- _curve.preamp=p; [_curve setGains:g];
+ float p=[_d[[self levelKey]] floatValue]; _pre.value=p; _preVal.text=[NSString stringWithFormat:@"%+.1f dB",p];
+ _curve.caption=_side?[self earCaption]:nil; _curve.preamp=_side?0:p; [_curve setGains:g];
 }
 - (void)viewDidLayoutSubviews {
  [super viewDidLayoutSubviews];
@@ -148,6 +155,8 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
  CGFloat btnH=42, preH=34, curveH=MIN(132,MAX(96,(bottom-top)*0.24));
  _buttons.frame=CGRectMake(m,bottom-btnH,w,btnH);
  CGFloat protY=CGRectGetMinY(_buttons.frame)-8-preH, meterY=protY-preH;
+ for(UIView *v in @[_peakLbl,_bar,_peakVal,_protLbl,_protVal,_protReset,_protSw])v.hidden=_side!=nil;
+ if(_side)meterY=CGRectGetMinY(_buttons.frame)-10;   /* hearing pages: no meter rows */
  _protLbl.frame=CGRectMake(m+4,protY,140,preH);
  _protSw.frame=CGRectMake(W-m-51,protY+(preH-31)/2,51,31);
  _protReset.frame=CGRectMake(CGRectGetMinX(_protSw.frame)-58,protY,52,preH);
@@ -168,20 +177,28 @@ static NSString *const kFreqLabels[12]={@"31",@"62",@"125",@"250",@"500",@"1k",@
  }
 }
 - (void)bandChanged:(UISlider *)s {
- float v=roundf(s.value*2)/2; NSString *k=[NSString stringWithFormat:@"g%ld",(long)s.tag];
+ float v=roundf(s.value*2)/2; NSString *k=[self bandKey:(long)s.tag];
  if(fabsf([_d[k] floatValue]-v)<0.01f&&_d[k])return;
- _d[k]=@(v); _d[@"preset"]=@(-1); [AEQStore save:_d]; [self refreshKeepingSlider:s];
+ _d[k]=@(v); if(!_side)_d[@"preset"]=@(-1); [AEQStore save:_d]; [self refreshKeepingSlider:s];
 }
 - (void)refreshKeepingSlider:(UISlider *)keep {
- float g[12]; for(int i=0;i<12;i++){g[i]=[_d[[NSString stringWithFormat:@"g%d",i]] floatValue];
+ float g[12]; for(int i=0;i<12;i++){g[i]=[_d[[self bandKey:i]] floatValue];
   _val[i].text=fabsf(g[i])<0.01f?@"0":[NSString stringWithFormat:@"%+g",g[i]];}
- _curve.preamp=[_d[@"preamp"] floatValue]; [_curve setGains:g];
+ _curve.caption=_side?[self earCaption]:nil; _curve.preamp=_side?0:[_d[@"preamp"] floatValue]; [_curve setGains:g];
 }
 - (void)preChanged:(UISlider *)s {
- float v=roundf(s.value*2)/2; if(fabsf([_d[@"preamp"] floatValue]-v)<0.01f&&_d[@"preamp"])return;
- _d[@"preamp"]=@(v); _d[@"protReset"]=@(([_d[@"protReset"] intValue]+1)&15); _preVal.text=[NSString stringWithFormat:@"%+.1f dB",v]; [AEQStore save:_d]; [self refreshKeepingSlider:s];
+ float v=roundf(s.value*2)/2; NSString *lk=[self levelKey]; if(fabsf([_d[lk] floatValue]-v)<0.01f&&_d[lk])return;
+ _d[lk]=@(v); if(!_side)_d[@"protReset"]=@(([_d[@"protReset"] intValue]+1)&15); _preVal.text=[NSString stringWithFormat:@"%+.1f dB",v]; [AEQStore save:_d]; [self refreshKeepingSlider:s];
 }
-- (void)flat { [AEQStore applyGains:@[] into:_d]; _d[@"preamp"]=@0; _d[@"preset"]=@0; _d[@"protReset"]=@(([_d[@"protReset"] intValue]+1)&15); [AEQStore save:_d]; [self refresh]; }
+- (void)copyOtherEar {
+ NSString *o=[_side isEqualToString:@"L"]?@"R":@"L";
+ for(int i=0;i<12;i++){id v=_d[[NSString stringWithFormat:@"e%@%d",o,i]]; if(v)_d[[self bandKey:i]]=v; else [_d removeObjectForKey:[self bandKey:i]];}
+ id lv=_d[[@"earLevel" stringByAppendingString:o]]; if(lv)_d[[self levelKey]]=lv; else [_d removeObjectForKey:[self levelKey]];
+ [AEQStore save:_d]; [self refresh];
+}
+- (void)flat {
+ if(_side){ for(int i=0;i<12;i++)[_d removeObjectForKey:[self bandKey:i]]; [AEQStore save:_d]; [self refresh]; return; }
+ [AEQStore applyGains:@[] into:_d]; _d[@"preamp"]=@0; _d[@"preset"]=@0; _d[@"protReset"]=@(([_d[@"protReset"] intValue]+1)&15); [AEQStore save:_d]; [self refresh]; }
 - (void)alert:(NSString *)t message:(NSString *)m {
  UIAlertController *a=[UIAlertController alertControllerWithTitle:t message:m preferredStyle:UIAlertControllerStyleAlert];
  [a addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];

@@ -94,7 +94,7 @@ extern char **environ;
  NSString *key=[spec propertyForKey:@"key"]; if(!key)return;
  NSMutableDictionary *d=[AEQStore load];
  static NSSet *plgBool, *plgNum;
- if(!plgBool){plgBool=[NSSet setWithArray:@[@"plgDRX",@"plgGX",@"plgXF",@"plgField",@"plgPitch",@"plgConv",@"plgBalance",@"pitchLimiter",@"gainDetailed",@"hpDetect"]];
+ if(!plgBool){plgBool=[NSSet setWithArray:@[@"plgDRX",@"plgGX",@"plgXF",@"plgField",@"plgPitch",@"plgConv",@"plgBalance",@"pitchLimiter",@"gainDetailed",@"hpDetect",@"earOn"]];
   plgNum=[NSSet setWithArray:@[@"drxBass",@"drxMids",@"drxTreble",@"drxGain",@"gxBass",@"gxMids",@"gxDelay",@"gxBassHz",@"gxMidsHz",@"gxGain",@"xfLevel",@"fieldWidth",@"pitchGain",@"convLevel",@"balance"]];}
  if([plgBool containsObject:key]){d[key]=@([value boolValue]);[AEQStore save:d];if([key isEqualToString:@"gainDetailed"])[self reloadSpecifiers];return;}
  if([key isEqualToString:@"volSteps"]){d[key]=@(MAX(16,MIN(100,[value intValue])));[AEQStore save:d];return;}
@@ -164,6 +164,17 @@ extern char **environ;
    [d removeObjectForKey:k];
   }
   [AEQStore save:d]; [self reloadSpecifiers];
+ }]];
+ [self presentViewController:a animated:YES completion:nil];
+}
+/* Accessibility > Hearing: clear both ears' level and EQ (keeps the on/off switch) */
+- (void)resetEars {
+ UIAlertController *a=[UIAlertController alertControllerWithTitle:@"Reset both ears?" message:@"Left and right level and EQ go back to flat." preferredStyle:UIAlertControllerStyleAlert];
+ [a addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+ [a addAction:[UIAlertAction actionWithTitle:@"Reset" style:UIAlertActionStyleDestructive handler:^(__unused UIAlertAction *x){
+  NSMutableDictionary *d=[AEQStore load];
+  for(int i=0;i<12;i++){[d removeObjectForKey:[NSString stringWithFormat:@"eL%d",i]];[d removeObjectForKey:[NSString stringWithFormat:@"eR%d",i]];}
+  [d removeObjectForKey:@"earLevelL"]; [d removeObjectForKey:@"earLevelR"]; [AEQStore save:d];
  }]];
  [self presentViewController:a animated:YES completion:nil];
 }

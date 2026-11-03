@@ -99,6 +99,9 @@ size_t aeq_status_report(char *buf,size_t len,int verbose){
   say(&o," %s, preamp %+.1f dB, output level %+.1f dB%s\n",pub.enabled?"On":"Off",pub.preamp,autoGain,
    pub.enabled&&autoGain<pub.preamp-0.05f?" (lowered so EQ boosts can't clip)":"");
   say(&o," %s\n",!pub.enabled?"Not processing (switch is off).":(running&&ms.frames?"Processing audio now.":"Ready (plays when audio does)."));
+  { uint64_t w[4]; for(int i=0;i<4;i++){char k[64];snprintf(k,sizeof k,AEQ_SET_E "%d",i);w[i]=aeq_state(k);}
+    float el[AEQ_BANDS],er[AEQ_BANDS],lv[2];
+    if(aeq_unpack_ear(w,el,er,lv))say(&o," Hearing: separate left / right on (left level %+.1f dB, right level %+.1f dB)\n",lv[0],lv[1]); }
  } else say(&o," No settings sent yet. Tap Reconnect (More).\n");
 
  /* ---------- clipping ---------- */
